@@ -27,8 +27,8 @@ SECRET_KEY = 'django-insecure-ecz_!i430m2e&0_!9$#ob-3x(4%(a$7t4)aqo!vgc-i5p76$-q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = DEBUG
 
 # Application definition
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'quiz.apps.QuizConfig',
     'nested_inline',
     'rest_framework',
+    'corsheaders',
 
 ]
 
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'dj_quiz.admin_middleware.AdminCheckMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
 
 
 ]
