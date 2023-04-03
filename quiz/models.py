@@ -29,3 +29,37 @@ class Answer(models.Model):
 
     def __str__(self):
         return self.content
+
+
+class QuizResult(models.Model):
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='to_quiz')
+    result = models.TextField()
+    name = models.CharField(max_length=100, default=None)
+    phone = models.CharField(max_length=100, default=None)
+    email = models.EmailField(default=None)
+
+
+class AdminNotificationWay(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    via_sms = models.BooleanField(default=False)
+    via_telegram = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural = 'Way to notify the Admin'
+
+    def __str__(self):
+        return 'Choose the way to be notified about passed quizzes'
+
+
+class QuizCompletedForm(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    define_name = models.BooleanField(default=True)
+    define_phone = models.BooleanField(default=True)
+    define_email = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name_plural = 'Information to get from Customer'
+
+    def __str__(self):
+        return 'Choose the information to be provided by the person who passed a quiz'
+

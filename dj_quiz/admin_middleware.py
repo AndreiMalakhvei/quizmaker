@@ -6,7 +6,7 @@ class AdminCheckMiddleware:
         self. get_response = get_response
 
     def __call__(self, request):
-        if request.path.startswith('/admin/'):
+        if request.path.startswith('/admin/') and not request.user.is_anonymous:
             if not request.user.is_superuser:
                 return HttpResponseRedirect('/quizadmin/')
 
