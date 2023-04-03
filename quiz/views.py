@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from rest_framework import generics
 from .models import Quiz, Question, Answer
-from .serializers import QuizzesSerializer, QuestionSerializer
+from .serializers import QuizzesSerializer, QuestionSerializer, QuizResultSerializer
 from rest_framework.permissions import AllowAny
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, ParseError
 
 
 class QuizzesAPIView(generics.ListAPIView):
@@ -20,3 +20,19 @@ class QuizzAPIView(generics.ListAPIView):
         if not qs:
             raise NotFound(detail='Invalid Quiz ID')
         return qs
+
+
+class QuizResultSaveView(generics.CreateAPIView):
+    serializer_class = QuizResultSerializer
+
+    def post(self, request, *args, **kwargs):
+        ordict = request.data
+        try:
+            res = ordict['result']
+            ordict['result'] = str(res)
+        except KeyError:
+            raise ParseError('No attached results found')
+        serializer = self.serializer_class(data=ordict)
+        if not serializer.is_valid():
+            print(serializer.errors)
+        return self.create(request, *args, **kwargs)

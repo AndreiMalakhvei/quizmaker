@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-
+from django.utils import timezone
 
 class Quiz(models.Model):
     name = models.CharField(max_length=300)
@@ -37,6 +37,8 @@ class QuizResult(models.Model):
     name = models.CharField(max_length=100, default=None)
     phone = models.CharField(max_length=100, default=None)
     email = models.EmailField(default=None)
+    date = models.DateTimeField('Дата добавления', blank=True, default=timezone.now)
+    admin_notified = models.BooleanField(default=False)
 
 
 class AdminNotificationWay(models.Model):

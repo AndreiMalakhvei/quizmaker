@@ -4,6 +4,9 @@ const quizIndicator = document.getElementById('quiz-indicator')
 const quizResult = document.getElementById('quiz-results')
 const btnNext = document.getElementById('btn-next')
 const btnRestart = document.getElementById('btn-restart')
+const quizFormDiv = document.getElementById('quiz-complete-form')
+const quizForm = document.getElementById('inputForm')
+
 
 let localResults = {}
 let dataLength = 0
@@ -26,7 +29,7 @@ const renderQuestion = (index, data) => {
                 `
             <li>
                 <label>
-                    <input class="answer-input" type="radio" name="${index}" value="${answer.id}">
+                    <input class="answer-input" type="radio" name="${data[index].id}" value="${answer.id}">
                     ${answer.content}
                 </label>
             </li>
@@ -46,16 +49,17 @@ const renderQuestion = (index, data) => {
 const getData = () => {
     fetch('http://127.0.0.1:8000/api/v1/quizz/6')
         .then(
-            response => {return response.json();}
+            response => {
+                return response.json();
+            }
         )
-        .then( responseData => {
+        .then(responseData => {
             console.log(responseData)
-            if (responseData){
+            if (responseData) {
                 dataLength = responseData.length
                 dataSet = responseData
                 renderQuestion(0, dataSet)
-            }
-            else {
+            } else {
                 quizQuestions.innerHTML = `
                 <div class="quiz-question-item">
                     <div class="quiz-question-item-qestion">
@@ -85,7 +89,7 @@ const renderResults = (data) => {
     const getAnswers = (index, data) =>
         data[index]
             .to_question
-            .map((answer) => `<li class="${checkIsCorrect(answer, index)}">${answer.content}</li>`)
+            .map((answer) => `<li class="${checkIsCorrect(answer, data[index].id)}">${answer.content}</li>`)
             .join('')
 
     data.forEach((question, index) => {
@@ -97,9 +101,9 @@ const renderResults = (data) => {
         `
     })
 
+    renderForm()
     quizResult.innerHTML = result
 }
-
 
 
 quiz.addEventListener('change', (event) => {
@@ -115,10 +119,12 @@ quiz.addEventListener('click', (event) => {
         if (nextQuestionIndex === dataLength) {
             quizQuestions.classList.add('questions--hidden')
             quizIndicator.classList.add('quiz--hidden')
-            btnNext.style.visibility='hidden'
+            btnNext.style.visibility = 'hidden'
+            quizFormDiv.classList.remove('form--hidden')
 
-            quizResult.style.visibility='visible'
-            btnRestart.style.visibility='visible'
+            quizResult.style.visibility = 'visible'
+            btnRestart.style.visibility = 'visible'
+
 
             renderResults(dataSet)
         } else {
@@ -130,16 +136,69 @@ quiz.addEventListener('click', (event) => {
 
         quizQuestions.classList.remove('questions--hidden')
         quizIndicator.classList.remove('quiz--hidden')
-        btnNext.style.visibility='visible'
-        quizResult.style.visibility='hidden'
-        btnRestart.style.visibility='hidden'
+        btnNext.style.visibility = 'visible'
+        quizResult.style.visibility = 'hidden'
+        btnRestart.style.visibility = 'hidden'
+
+        quizFormDiv.classList.add('form--hidden')
 
         renderQuestion(0, dataSet)
     }
 })
 
 
+const renderForm = () => {
 
+    quizForm.innerHTML = `    
+    <div class="mb-3">
+    <label for="nameControl">First name: </label>
+        <input class="form-control" type="text" name="nameControl" id="nameInput"  required>
+    </div>
+            <div class="mb-3">        
+      <label for="nameMail" class="form-label">Email address</label>
+      <input type="email" class="form-control"  name="nameMail" id="mailInput" placeholder="name@example.com" required>
+    </div>
+    <div class="mb-3">
+      <label for="namePhone" class="form-label">Phone number</label>
+      <input class="form-control" name="namePhone" id="phoneInput" >
+    </div>
+    <input type="submit" value="Отправить результаты" class="btn btn-primary" >   
+          
+`
+}
+
+
+
+
+quizForm.addEventListener("submit", (event) => {
+    event.preventDefault()
+    const postData = {
+        quiz: 6,
+        name: quizForm.elements.nameInput.value,
+        email: quizForm.elements.mailInput.value,
+        phone: quizForm.elements.phoneInput.value,
+        result: localResults.toString()
+    }
+
+    console.log(postData)
+    console.log(JSON.stringify(postData))
+
+    fetch('http://127.0.0.1:8000/api/v1/quizzresult/', {
+    method: "POST",
+    body: JSON.stringify(postData),
+    headers: {
+      "Content-Type": "application/json"
+    },
+
+    })
+        .then(
+            response => {
+                return response.json();
+            }
+        )
+
+
+})
 
 
 

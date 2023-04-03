@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import Quiz, Question, Answer
+from rest_framework.exceptions import ParseError
+
+from .models import Quiz, Question, Answer, QuizResult
 
 
 class QuizzesSerializer(serializers.ModelSerializer):
@@ -24,4 +26,16 @@ class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = ['id', 'content', 'to_question']
+
+
+class QuizResultSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = QuizResult
+        fields = '__all__'
+
+
+
+
+
 
