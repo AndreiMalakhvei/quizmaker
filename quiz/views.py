@@ -1,5 +1,7 @@
-from django.shortcuts import render
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.response import Response
+from .models import Profile
+from dj_quiz.quiznotifier.botnotifier import send_tg_post
 from .models import Quiz, Question, Answer
 from .serializers import QuizzesSerializer, QuestionSerializer, QuizResultSerializer
 from rest_framework.permissions import AllowAny
@@ -36,3 +38,19 @@ class QuizResultSaveView(generics.CreateAPIView):
         if not serializer.is_valid():
             print(serializer.errors)
         return self.create(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        quiz = Quiz.objects.get(id=serializer.data['quiz'])
+
+        owner = Profile.objects.get(id=quiz.owner_id)
+        if owner.telegram:
+            print()
+            message = f"Пользователь: {serializer.data['name']}, {serializer.data['phone']}, {serializer.data['email']} \n"
+            message += f'Тест: {quiz.name}\n'
+            message += f"Результаты: {serializer.data['result']}\n"
+            send_tg_post(owner.telegram, message)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

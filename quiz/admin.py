@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin
-from .models import Quiz, Question, Answer, AdminNotificationWay, QuizCompletedForm, QuizResult
+from .models import Quiz, Question, Answer, AdminNotificationWay, QuizCompletedForm, QuizResult, Profile
 
 admin.site.register(Quiz)
 admin.site.register(Question)
@@ -9,7 +9,7 @@ admin.site.register(Answer)
 admin.site.register(AdminNotificationWay)
 admin.site.register(QuizCompletedForm)
 admin.site.register(QuizResult)
-
+admin.site.register(Profile)
 
 class QuizAdminArea(admin.AdminSite):
     site_header = 'Quiz Maker'

@@ -1,3 +1,5 @@
+
+
 const quiz = document.getElementById('quiz')
 const quizQuestions = document.getElementById('quiz-questions')
 const quizIndicator = document.getElementById('quiz-indicator')
@@ -6,11 +8,13 @@ const btnNext = document.getElementById('btn-next')
 const btnRestart = document.getElementById('btn-restart')
 const quizFormDiv = document.getElementById('quiz-complete-form')
 const quizForm = document.getElementById('inputForm')
-
+const quizList = document.getElementById('quiz-list')
 
 let localResults = {}
 let dataLength = 0
 let dataSet = {}
+let QuizzIDV = 0
+
 
 const renderIndicator = (quizStep, data) => {
     quizIndicator.innerHTML = `${quizStep}/${dataLength}`
@@ -20,6 +24,7 @@ const renderIndicator = (quizStep, data) => {
 const renderQuestion = (index, data) => {
     renderIndicator(index + 1, data)
     quizQuestions.dataset.currentStep = index
+    btnNext.style.visibility = 'visible'
     btnNext.disabled = true
 
     const renderAnswers = () =>
@@ -46,8 +51,9 @@ const renderQuestion = (index, data) => {
 }
 
 
-const getData = () => {
-    fetch('http://127.0.0.1:8000/api/v1/quizz/6')
+const getData = (quizzID) => {
+    QuizzIDV = quizzID
+    fetch(`http://127.0.0.1:8000/api/v1/quizz/${quizzID}`)
         .then(
             response => {
                 return response.json();
@@ -173,15 +179,13 @@ const renderForm = () => {
 quizForm.addEventListener("submit", (event) => {
     event.preventDefault()
     const postData = {
-        quiz: 6,
+        quiz: QuizzIDV,
         name: quizForm.elements.nameInput.value,
         email: quizForm.elements.mailInput.value,
         phone: quizForm.elements.phoneInput.value,
-        result: localResults.toString()
+        result: localResults
     }
 
-    console.log(postData)
-    console.log(JSON.stringify(postData))
 
     fetch('http://127.0.0.1:8000/api/v1/quizzresult/', {
     method: "POST",
@@ -193,19 +197,73 @@ quizForm.addEventListener("submit", (event) => {
     })
         .then(
             response => {
+                quizResult.style.visibility = 'hidden'
+                btnRestart.style.visibility = 'hidden'
+                quizFormDiv.classList.add('form--hidden')
+                quizList.classList.remove('quiz-list-hidden')
                 return response.json();
             }
         )
+})
 
+
+
+const getQuizzes = () => {
+    fetch('http://127.0.0.1:8000/api/v1/quizzes/')
+        .then(
+            response => {
+                return response.json();
+            }
+        )
+        .then(responseData => {
+            console.log(responseData)
+            if (responseData) {
+
+                renderQuizzList(responseData)
+            } else {
+                quizList.innerHTML = `
+                <div class="quiz-question-item">
+                    <div class="quiz-question-item-qestion">
+                    <p>Квизы не найдены...</p>
+                    </div>        
+                </div>
+    `
+            }
+        });
+}
+
+
+
+const renderQuizzList = (data) => {
+    let result = 'Доступные квизы'
+
+    data.map(
+        (quiz) => result += `<li class="quiz-name"> <a href="" class = "quiz-link" id="${quiz.id}" > ${quiz.name} </a> </li>`
+    ).join('')
+
+    quizList.innerHTML = `
+    <ul class="quiz-list_list">
+    ${result} 
+    </ul>
+    `
+}
+
+quizList.addEventListener('click', (event) => {
+    event.preventDefault()
+
+
+    if (event.target.className === 'quiz-link') {
+
+        getData(event.target.id)
+        quizList.classList.add('quiz-list-hidden')
+    }
 
 })
 
 
 
 
-getData()
-
-
+getQuizzes()
 
 
 

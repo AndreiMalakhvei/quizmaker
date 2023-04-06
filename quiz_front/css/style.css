@@ -11,11 +11,15 @@ body {
     margin-bottom: 20px;
 }
 
+#btn-next {
+    visibility: hidden;
+}
 
 #btn-restart {
     visibility: hidden;
 }
 
+.quiz-list-hidden,
 .form--hidden,
 .quiz--hidden,
 .questions--hidden {

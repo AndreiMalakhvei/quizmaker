@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ParseError
+
 
 from .models import Quiz, Question, Answer, QuizResult
 
