@@ -8,3 +8,4 @@ sqlparse==0.4.3
 tzdata==2023.3
 
 telebot~=0.0.5
+telesign~=2.2.2

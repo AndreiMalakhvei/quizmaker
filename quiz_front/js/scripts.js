@@ -1,3 +1,4 @@
+import testing from './jsfolder/testscript.js'
 const quiz = document.getElementById('quiz')
 const quizQuestions = document.getElementById('quiz-questions')
 const quizIndicator = document.getElementById('quiz-indicator')
@@ -296,6 +297,6 @@ quizList.addEventListener('click', (event) => {
 
 
 getQuizzes()
-
+testing()
 
 
