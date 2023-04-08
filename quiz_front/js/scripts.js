@@ -1,5 +1,3 @@
-
-
 const quiz = document.getElementById('quiz')
 const quizQuestions = document.getElementById('quiz-questions')
 const quizIndicator = document.getElementById('quiz-indicator')
@@ -14,6 +12,7 @@ let localResults = {}
 let dataLength = 0
 let dataSet = {}
 let QuizzIDV = 0
+let quizzOwner = 0
 
 
 const renderIndicator = (quizStep, data) => {
@@ -51,8 +50,9 @@ const renderQuestion = (index, data) => {
 }
 
 
-const getData = (quizzID) => {
+const getData = (quizzID,) => {
     QuizzIDV = quizzID
+
     fetch(`http://127.0.0.1:8000/api/v1/quizz/${quizzID}`)
         .then(
             response => {
@@ -106,8 +106,8 @@ const renderResults = (data) => {
         </div>
         `
     })
-
-    renderForm()
+    console.log(data)
+    renderForm(quizzOwner)
     quizResult.innerHTML = result
 }
 
@@ -153,36 +153,66 @@ quiz.addEventListener('click', (event) => {
 })
 
 
-const renderForm = () => {
+const renderForm = (owner) => {
+    let markdown = ``
 
-    quizForm.innerHTML = `    
-    <div class="mb-3">
+       fetch(`http://127.0.0.1:8000/api/v1/completed/${owner}`)
+        .then(
+            response => {
+                return response.json();
+            }
+        )
+        .then(responseData => {
+            console.log(responseData)
+
+            if (responseData.define_name) {
+                markdown +=
+                    `<div class="mb-3">
     <label for="nameControl">First name: </label>
         <input class="form-control" type="text" name="nameControl" id="nameInput"  required>
-    </div>
-            <div class="mb-3">        
+    </div>`
+            }
+
+
+            if (responseData.define_email) {
+                markdown +=
+                    `<div class="mb-3">        
       <label for="nameMail" class="form-label">Email address</label>
       <input type="email" class="form-control"  name="nameMail" id="mailInput" placeholder="name@example.com" required>
-    </div>
-    <div class="mb-3">
+    </div>`
+            }
+
+       if (responseData.define_phone) {
+                markdown +=
+                    `<div class="mb-3">
       <label for="namePhone" class="form-label">Phone number</label>
       <input class="form-control" name="namePhone" id="phoneInput" >
-    </div>
-    <input type="submit" value="Отправить результаты" class="btn btn-primary" >   
-          
-`
-}
+    </div>`
+            }
 
 
+       if (responseData.define_name || responseData.define_phone || responseData.define_email) {
+                markdown +=
+                    `<input type="submit" value="Отправить результаты" class="btn btn-primary">`
+            }
+            quizForm.innerHTML = markdown
 
+        })}
 
 quizForm.addEventListener("submit", (event) => {
     event.preventDefault()
+    let nameVar = ''
+    let phoneVar = ''
+    let mailVar = ''
+    if (quizForm.elements.nameInput) {nameVar = quizForm.elements.nameInput.value}
+    if (quizForm.elements.mailInput) {mailVar = quizForm.elements.mailInput.value}
+    if (quizForm.elements.phoneInput) {phoneVar = quizForm.elements.phoneInput.value}
+
     const postData = {
         quiz: QuizzIDV,
-        name: quizForm.elements.nameInput.value,
-        email: quizForm.elements.mailInput.value,
-        phone: quizForm.elements.phoneInput.value,
+        name: nameVar,
+        email: mailVar,
+        phone: phoneVar,
         result: localResults
     }
 
@@ -216,7 +246,7 @@ const getQuizzes = () => {
             }
         )
         .then(responseData => {
-            console.log(responseData)
+
             if (responseData) {
 
                 renderQuizzList(responseData)
@@ -238,7 +268,7 @@ const renderQuizzList = (data) => {
     let result = 'Доступные квизы'
 
     data.map(
-        (quiz) => result += `<li class="quiz-name"> <a href="" class = "quiz-link" id="${quiz.id}" > ${quiz.name} </a> </li>`
+        (quiz) => result += `<li class="quiz-name"> <a href="" rel="${quiz.owner}" class = "quiz-link" id="${quiz.id}" > ${quiz.name} </a> </li>`
     ).join('')
 
     quizList.innerHTML = `
@@ -253,8 +283,10 @@ quizList.addEventListener('click', (event) => {
 
 
     if (event.target.className === 'quiz-link') {
+        quizzOwner = event.target.rel
 
         getData(event.target.id)
+
         quizList.classList.add('quiz-list-hidden')
     }
 

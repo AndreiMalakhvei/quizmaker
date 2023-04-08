@@ -1,7 +1,5 @@
 from rest_framework import serializers
-
-
-from .models import Quiz, Question, Answer, QuizResult
+from .models import Quiz, Question, Answer, QuizResult, QuizCompletedForm
 
 
 class QuizzesSerializer(serializers.ModelSerializer):
@@ -32,10 +30,16 @@ class QuizResultSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = QuizResult
+        fields = ['quiz', 'result', 'name', 'phone', 'email']
+        extra_kwargs = {'name': {'required': False, 'allow_blank': True},
+                        'phone': {'required': False, 'allow_blank': True},
+                        'email': {'required': False, 'allow_blank': True},
+                        }
+
+
+class CompleteFormSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = QuizCompletedForm
         fields = '__all__'
-
-
-
-
-
 

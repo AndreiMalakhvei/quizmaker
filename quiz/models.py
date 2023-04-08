@@ -11,8 +11,11 @@ class Profile(models.Model):
     telegram = models.CharField(max_length=100, blank=True, default='')
     phone = models.CharField(max_length=100, blank=True, default='')
 
+    class Meta:
+        verbose_name_plural = 'Admin Contacts'
+
     def __str__(self):
-        return self.user
+        return "Change Admin Contact Details"
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
@@ -55,9 +58,9 @@ class Answer(models.Model):
 class QuizResult(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='to_quiz')
     result = models.TextField()
-    name = models.CharField(max_length=100, default=None)
-    phone = models.CharField(max_length=100, default=None)
-    email = models.EmailField(default=None)
+    name = models.CharField(max_length=100, default=None, blank=True)
+    phone = models.CharField(max_length=100, default=None, blank=True)
+    email = models.EmailField(default=None, blank=True)
     date = models.DateTimeField('Дата добавления', blank=True, default=timezone.now)
     admin_notified = models.BooleanField(default=False)
 

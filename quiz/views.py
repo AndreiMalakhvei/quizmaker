@@ -2,8 +2,8 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from .models import Profile
 from dj_quiz.quiznotifier.botnotifier import send_tg_post
-from .models import Quiz, Question, Answer
-from .serializers import QuizzesSerializer, QuestionSerializer, QuizResultSerializer
+from .models import Quiz, Question, QuizCompletedForm
+from .serializers import QuizzesSerializer, QuestionSerializer, QuizResultSerializer, CompleteFormSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.exceptions import NotFound, ParseError
 
@@ -54,3 +54,12 @@ class QuizResultSaveView(generics.CreateAPIView):
             send_tg_post(owner.telegram, message)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class QuizCompletedFormView(generics.RetrieveAPIView):
+    serializer_class = CompleteFormSerializer
+
+    def get_object(self):
+
+        obj = QuizCompletedForm.objects.get(owner_id=self.kwargs.get('pk'))
+        return obj
