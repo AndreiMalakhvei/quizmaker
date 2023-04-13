@@ -2,6 +2,8 @@ import {renderFormRequest} from "./httprequests.js";
 
 const quizForm = document.getElementById('inputForm')
 
+
+
 const renderForm = (owner) => {
     let markdown = ``
     console.log("entered renderForm")

@@ -11,7 +11,16 @@ export async function getQuizRequest (id) {
     }
 
 export async function renderFormRequest (owner) {
-        console.log("starting request")
-	    const response = await fetch(`${URL}completed/${owner}`)
+        const response = await fetch(`${URL}completed/${owner}`)
         return response.json()
     }
+
+export async function postFormRequest (postData) {
+        const response = await fetch(`${URL}quizzresult/`, {
+            method: "POST",
+            body: JSON.stringify(postData),
+            headers: {"Content-Type": "application/json"}
+            })
+        return response.json()
+    }
+

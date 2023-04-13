@@ -1,5 +1,7 @@
-import {getQuizzesRequest, getQuizRequest} from './jsfolder/httprequests.js'
+import {getQuizzesRequest, getQuizRequest, postFormRequest} from './jsfolder/httprequests.js'
 import renderForm from './jsfolder/renderContactForm.js'
+import renderQuizzList from "./jsfolder/renderListOfQuizzes.js";
+import renderResults from "./jsfolder/renderResultsBlock.js";
 
 const quizForm = document.getElementById('inputForm')
 const quiz = document.getElementById('quiz')
@@ -59,7 +61,6 @@ const getData = (quizzID) => {
 
     getQuizRequest(quizzID)
         .then(responseData => {
-
             if (responseData) {
                 dataLength = responseData.length
                 dataSet = responseData
@@ -70,45 +71,42 @@ const getData = (quizzID) => {
                     <div class="quiz-question-item-qestion">
                     <p>Вопросы не найдены...</p>
                     </div>        
-                </div>
-    `
+                </div>    `
             }
         });
 };
 
-const renderResults = (data) => {
-    let result = 'Результаты теста:'
-
-    const checkIsCorrect = (answer, index) => {
-        let className = ''
-
-        if (!answer.is_correct && answer.id.toString() === localResults[index]) {
-            className = 'answer-invalid'
-        } else if (answer.is_correct) {
-            className = 'answer-valid'
-        }
-
-        return className
-    }
-
-    const getAnswers = (index, data) =>
-        data[index]
-            .to_question
-            .map((answer) => `<li class="${checkIsCorrect(answer, data[index].id)}">${answer.content}</li>`)
-            .join('')
-
-    data.forEach((question, index) => {
-        result += `
-        <div class="quiz-result-item">
-            <div class="quiz-result-item-qestion">${question.content}</div>
-            <ul class="quiz-result-item-answer">${getAnswers(index, dataSet)}</ul>
-        </div>
-        `
-    })
-    console.log(data)
-    renderForm(quizzOwner)
-    quizResult.innerHTML = result
-}
+// const renderResults = (data) => {
+//     let result = 'Результаты теста:'
+//     const checkIsCorrect = (answer, index) => {
+//         let className = ''
+//
+//         if (!answer.is_correct && answer.id.toString() === localResults[index]) {
+//             className = 'answer-invalid'
+//         } else if (answer.is_correct) {
+//             className = 'answer-valid'
+//         }
+//         return className
+//     }
+//
+//     const getAnswers = (index, data) =>
+//         data[index]
+//             .to_question
+//             .map((answer) => `<li class="${checkIsCorrect(answer, data[index].id)}">${answer.content}</li>`)
+//             .join('')
+//
+//     data.forEach((question, index) => {
+//         result += `
+//         <div class="quiz-result-item">
+//             <div class="quiz-result-item-qestion">${question.content}</div>
+//             <ul class="quiz-result-item-answer">${getAnswers(index, dataSet)}</ul>
+//         </div>
+//         `
+//     })
+//     console.log(data)
+//     renderForm(quizzOwner)
+//     quizResult.innerHTML = result
+// }
 
 
 quiz.addEventListener('change', (event) => {
@@ -126,31 +124,24 @@ quiz.addEventListener('click', (event) => {
             quizIndicator.classList.add('quiz--hidden')
             btnNext.style.visibility = 'hidden'
             quizFormDiv.classList.remove('form--hidden')
-
             quizResult.style.visibility = 'visible'
             btnRestart.style.visibility = 'visible'
-
-
-            renderResults(dataSet)
+            renderResults(dataSet, quizzOwner, dataSet, localResults)
         } else {
             renderQuestion(nextQuestionIndex, dataSet)
         }
     } else if (event.target.classList.contains('btn-restart')) {
         localResults = {}
         quizResult.innerHTML = ''
-
         quizQuestions.classList.remove('questions--hidden')
         quizIndicator.classList.remove('quiz--hidden')
         btnNext.style.visibility = 'visible'
         quizResult.style.visibility = 'hidden'
         btnRestart.style.visibility = 'hidden'
-
         quizFormDiv.classList.add('form--hidden')
-
         renderQuestion(0, dataSet)
     }
 })
-
 
 
 quizForm.addEventListener("submit", (event) => {
@@ -170,33 +161,21 @@ quizForm.addEventListener("submit", (event) => {
         result: localResults
     }
 
-
-    fetch('http://127.0.0.1:8000/api/v1/quizzresult/', {
-    method: "POST",
-    body: JSON.stringify(postData),
-    headers: {
-      "Content-Type": "application/json"
-    },
-
-    })
+    postFormRequest(postData)
         .then(
-            response => {
+            actions => {
                 quizResult.style.visibility = 'hidden'
                 btnRestart.style.visibility = 'hidden'
                 quizFormDiv.classList.add('form--hidden')
                 quizList.classList.remove('quiz-list-hidden')
-                return response.json();
             }
         )
 })
 
 
-
 const getQuizzes = () => {
     getQuizzesRequest().then(responseData => {
-
             if (responseData) {
-
                 renderQuizzList(responseData)
             } else {
                 quizList.innerHTML = `
@@ -204,46 +183,21 @@ const getQuizzes = () => {
                     <div class="quiz-question-item-qestion">
                     <p>Квизы не найдены...</p>
                     </div>        
-                </div>
-    `
+                </div>    `
             }
         });
 }
 
 
-
-const renderQuizzList = (data) => {
-    let result = 'Доступные квизы'
-
-    data.map(
-        (quiz) => result += `<li class="quiz-name"> <a href="" rel="${quiz.owner}" class = "quiz-link" id="${quiz.id}" > ${quiz.name} </a> </li>`
-    ).join('')
-
-    quizList.innerHTML = `
-    <ul class="quiz-list_list">
-    ${result} 
-    </ul>
-    `
-}
-
 quizList.addEventListener('click', (event) => {
     event.preventDefault()
-
-
     if (event.target.className === 'quiz-link') {
         quizzOwner = event.target.rel
-
         getData(event.target.id)
-
         quizList.classList.add('quiz-list-hidden')
     }
-
 })
 
 
 
-
 getQuizzes()
-
-
-
