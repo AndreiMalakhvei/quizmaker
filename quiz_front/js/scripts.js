@@ -1,4 +1,7 @@
-import testing from './jsfolder/testscript.js'
+import {getQuizzesRequest, getQuizRequest} from './jsfolder/httprequests.js'
+import renderForm from './jsfolder/renderContactForm.js'
+
+const quizForm = document.getElementById('inputForm')
 const quiz = document.getElementById('quiz')
 const quizQuestions = document.getElementById('quiz-questions')
 const quizIndicator = document.getElementById('quiz-indicator')
@@ -6,7 +9,7 @@ const quizResult = document.getElementById('quiz-results')
 const btnNext = document.getElementById('btn-next')
 const btnRestart = document.getElementById('btn-restart')
 const quizFormDiv = document.getElementById('quiz-complete-form')
-const quizForm = document.getElementById('inputForm')
+
 const quizList = document.getElementById('quiz-list')
 
 let localResults = {}
@@ -51,17 +54,12 @@ const renderQuestion = (index, data) => {
 }
 
 
-const getData = (quizzID,) => {
+const getData = (quizzID) => {
     QuizzIDV = quizzID
 
-    fetch(`http://127.0.0.1:8000/api/v1/quizz/${quizzID}`)
-        .then(
-            response => {
-                return response.json();
-            }
-        )
+    getQuizRequest(quizzID)
         .then(responseData => {
-            console.log(responseData)
+
             if (responseData) {
                 dataLength = responseData.length
                 dataSet = responseData
@@ -154,51 +152,6 @@ quiz.addEventListener('click', (event) => {
 })
 
 
-const renderForm = (owner) => {
-    let markdown = ``
-
-       fetch(`http://127.0.0.1:8000/api/v1/completed/${owner}`)
-        .then(
-            response => {
-                return response.json();
-            }
-        )
-        .then(responseData => {
-            console.log(responseData)
-
-            if (responseData.define_name) {
-                markdown +=
-                    `<div class="mb-3">
-    <label for="nameControl">First name: </label>
-        <input class="form-control" type="text" name="nameControl" id="nameInput"  required>
-    </div>`
-            }
-
-
-            if (responseData.define_email) {
-                markdown +=
-                    `<div class="mb-3">        
-      <label for="nameMail" class="form-label">Email address</label>
-      <input type="email" class="form-control"  name="nameMail" id="mailInput" placeholder="name@example.com" required>
-    </div>`
-            }
-
-       if (responseData.define_phone) {
-                markdown +=
-                    `<div class="mb-3">
-      <label for="namePhone" class="form-label">Phone number</label>
-      <input class="form-control" name="namePhone" id="phoneInput" >
-    </div>`
-            }
-
-
-       if (responseData.define_name || responseData.define_phone || responseData.define_email) {
-                markdown +=
-                    `<input type="submit" value="Отправить результаты" class="btn btn-primary">`
-            }
-            quizForm.innerHTML = markdown
-
-        })}
 
 quizForm.addEventListener("submit", (event) => {
     event.preventDefault()
@@ -240,13 +193,7 @@ quizForm.addEventListener("submit", (event) => {
 
 
 const getQuizzes = () => {
-    fetch('http://127.0.0.1:8000/api/v1/quizzes/')
-        .then(
-            response => {
-                return response.json();
-            }
-        )
-        .then(responseData => {
+    getQuizzesRequest().then(responseData => {
 
             if (responseData) {
 
@@ -297,6 +244,6 @@ quizList.addEventListener('click', (event) => {
 
 
 getQuizzes()
-testing()
+
 
 

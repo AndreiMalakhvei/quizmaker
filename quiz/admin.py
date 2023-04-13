@@ -24,6 +24,7 @@ class AnswerInline(NestedStackedInline):
     extra = 1
 
 
+
 class QuestionInline(NestedStackedInline):
     model = Question
     extra = 1
