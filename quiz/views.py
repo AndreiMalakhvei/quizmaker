@@ -60,6 +60,5 @@ class QuizCompletedFormView(generics.RetrieveAPIView):
     serializer_class = CompleteFormSerializer
 
     def get_object(self):
-
         obj = QuizCompletedForm.objects.get(owner_id=self.kwargs.get('pk'))
         return obj

@@ -3,7 +3,7 @@ import re
 
 class RegExpValidator:
     def validate_phone(self, phone):
-        ready_phone = re.sub(r"[^\d]", "", phone)
+        ready_phone = re.sub(r"\D", "", phone)
         if ready_phone.isnumeric():
             return True
         return False
