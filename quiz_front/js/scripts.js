@@ -1,7 +1,7 @@
-import {getQuizzesRequest, getQuizRequest, postFormRequest} from './jsfolder/httprequests.js'
-import renderForm from './jsfolder/renderContactForm.js'
-import renderQuizzList from "./jsfolder/renderListOfQuizzes.js";
+import {getQuizRequest, postFormRequest} from './jsfolder/httprequests.js'
 import renderResults from "./jsfolder/renderResultsBlock.js";
+import getQuizzes from "./jsfolder/startMain.js"
+
 
 const quizForm = document.getElementById('inputForm')
 const quiz = document.getElementById('quiz')
@@ -11,7 +11,6 @@ const quizResult = document.getElementById('quiz-results')
 const btnNext = document.getElementById('btn-next')
 const btnRestart = document.getElementById('btn-restart')
 const quizFormDiv = document.getElementById('quiz-complete-form')
-
 const quizList = document.getElementById('quiz-list')
 
 let localResults = {}
@@ -36,14 +35,12 @@ const renderQuestion = (index, data) => {
         data[index]
             .to_question
             .map((answer) =>
-                `
-            <li>
+            `<li>
                 <label>
                     <input class="answer-input" type="radio" name="${data[index].id}" value="${answer.id}">
                     ${answer.content}
                 </label>
-            </li>
-            `
+            </li>`
             )
             .join('')
 
@@ -75,39 +72,6 @@ const getData = (quizzID) => {
             }
         });
 };
-
-// const renderResults = (data) => {
-//     let result = 'Результаты теста:'
-//     const checkIsCorrect = (answer, index) => {
-//         let className = ''
-//
-//         if (!answer.is_correct && answer.id.toString() === localResults[index]) {
-//             className = 'answer-invalid'
-//         } else if (answer.is_correct) {
-//             className = 'answer-valid'
-//         }
-//         return className
-//     }
-//
-//     const getAnswers = (index, data) =>
-//         data[index]
-//             .to_question
-//             .map((answer) => `<li class="${checkIsCorrect(answer, data[index].id)}">${answer.content}</li>`)
-//             .join('')
-//
-//     data.forEach((question, index) => {
-//         result += `
-//         <div class="quiz-result-item">
-//             <div class="quiz-result-item-qestion">${question.content}</div>
-//             <ul class="quiz-result-item-answer">${getAnswers(index, dataSet)}</ul>
-//         </div>
-//         `
-//     })
-//     console.log(data)
-//     renderForm(quizzOwner)
-//     quizResult.innerHTML = result
-// }
-
 
 quiz.addEventListener('change', (event) => {
     if (event.target.classList.contains('answer-input')) {
@@ -143,7 +107,6 @@ quiz.addEventListener('click', (event) => {
     }
 })
 
-
 quizForm.addEventListener("submit", (event) => {
     event.preventDefault()
     let nameVar = ''
@@ -172,23 +135,6 @@ quizForm.addEventListener("submit", (event) => {
         )
 })
 
-
-const getQuizzes = () => {
-    getQuizzesRequest().then(responseData => {
-            if (responseData) {
-                renderQuizzList(responseData)
-            } else {
-                quizList.innerHTML = `
-                <div class="quiz-question-item">
-                    <div class="quiz-question-item-qestion">
-                    <p>Квизы не найдены...</p>
-                    </div>        
-                </div>    `
-            }
-        });
-}
-
-
 quizList.addEventListener('click', (event) => {
     event.preventDefault()
     if (event.target.className === 'quiz-link') {
@@ -197,7 +143,5 @@ quizList.addEventListener('click', (event) => {
         quizList.classList.add('quiz-list-hidden')
     }
 })
-
-
 
 getQuizzes()
