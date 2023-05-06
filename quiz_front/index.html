@@ -10,6 +10,9 @@
     <script src="js/inputmask.js"  type="text/javascript"></script>
 </head>
 <body>
+<div class="quiz-navbar" id="quiz-navbar">
+
+</div>
 
 <div class="quiz" id="quiz">
 
@@ -17,16 +20,22 @@
     <div class="quiz-questions" id="quiz-questions"></div>
     <div class="quiz-indicator" id="quiz-indicator"></div>
     <div class="quiz-results" id="quiz-results"></div>
-    <div class="quiz-complete-form" id="quiz-complete-form">
-        <form method="post" id="inputForm">
+
+
+    <div class="quiz-controls">
+        <div class="container text-center">
+            <button class="btn btn-primary btn-next" id="btn-next">Далее</button>
+        </div>
+        <div class="container text-center">
+            <button class="btn btn-warning btn-restart" id="btn-restart">Пройти заново</button>
+        </div>
+    </div>
+
+
+    <div class="quiz-complete-form-wrapper" id="quiz-complete-form">
+        <form class="quiz-complete-form" method="post" id="inputForm">
         </form>
     </div>
-    <div class="quiz-controls">
-        <button class="btn btn-primary btn-next" id="btn-next">Далее</button>
-        <button class="btn btn-warning btn-restart" id="btn-restart">Пройти заново</button>
-
-    </div>
-
 
 </div>
 

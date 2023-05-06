@@ -9,13 +9,13 @@ class RegExpValidator:
         return False
 
     def validate_email(self, email):
-        EMAILT_PATTERN = '[a-zA-Zа-яА-ЯёЁ0-9]+@[a-zA-Zа-яА-ЯёЁ0-9]+\.[a-zA-Zа-яА-ЯёЁ0-9]+'
+        EMAILT_PATTERN = '[a-zA-Zа-яА-ЯёЁ0-9_-]+@[a-zA-Zа-яА-ЯёЁ0-9]+\.[a-zA-Zа-яА-ЯёЁ]+'
         if re.fullmatch(EMAILT_PATTERN, email):
             return True
         return False
 
     def validate_name(self, name):
-        NAME_PATTERN = '[a-zA-Zа-яА-ЯёЁ]+'
+        NAME_PATTERN = '[a-zA-Zа-яА-ЯёЁ`-]+'
         if re.fullmatch(NAME_PATTERN, name.capitalize()):
             return True
         return False
