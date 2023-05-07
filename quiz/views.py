@@ -2,10 +2,12 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from .models import Profile
 from dj_quiz.quiznotifier.botnotifier import send_tg_post
+from dj_quiz.quiznotifier.smsnotifier import send_sms
 from .models import Quiz, Question, QuizCompletedForm
 from .serializers import QuizzesSerializer, QuestionSerializer, QuizResultSerializer, CompleteFormSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.exceptions import NotFound, ParseError
+import re
 
 
 class QuizzesAPIView(generics.ListAPIView):
@@ -47,11 +49,15 @@ class QuizResultSaveView(generics.CreateAPIView):
 
         owner = Profile.objects.get(id=quiz.owner_id)
         if owner.telegram:
-            print()
             message = f"Пользователь: {serializer.data['name']}, {serializer.data['phone']}, {serializer.data['email']} \n"
             message += f'Тест: {quiz.name}\n'
             message += f"Результаты: {serializer.data['result']}\n"
             send_tg_post(owner.telegram, message)
+        if owner.phone:
+            message = f"Зарегистрировано новое прохождение теста {quiz.name}"
+            phone = re.sub(r"\D", "", owner.phone)
+            send_sms(message, phone)
+
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 

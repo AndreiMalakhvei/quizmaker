@@ -1,16 +1,14 @@
-from __future__ import print_function
-from telesign.messaging import MessagingClient
+from dj_quiz.quiznotifier.secretkeys import SMS_TOKEN
+import requests
 
-customer_id = "D6C0DA21-5113-4ECD-82F8-25EE0990F335"
-api_key = "*******"
 
-phone_number = "*****"
-message = "You're scheduled for a dentist appointment at 2:30PM."
-message_type = "ARN"
+def send_sms(message, phone):
+    result = requests.post(
+        'https://app.sms.by/api/v1/sendQuickSMS',
+        {
+            'token': SMS_TOKEN,
+            'message': message,
+            'phone': phone
+        }
+    )
 
-messaging = MessagingClient(customer_id, api_key)
-response = messaging.message(phone_number, message, message_type)
-
-print(response.json)
-
-# {'external_id': None, 'status': {'code': 10033, 'description': 'Unverified phone number requested for trial account'}}

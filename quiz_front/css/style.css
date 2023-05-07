@@ -1,35 +1,152 @@
 body {
     margin: 0;
-}
+
+    }
+
+.quiz-navbar{
+    height: 5vh;
+    width: 100%;
+    background-color: black;
+    float: top;
+    }
 
 .quiz {
     margin: 0 auto;
-    width: 600px;
+    width: 800px;
+    }
+
+.quiz-list-ulist {
+    list-style: none;
+    }
+
+.list-title{
+    display: block;
+    width: 400px;
+    margin: 10px;
+    padding:10px;
+    font-size: 40px;
 }
+
+
+
+.quiz-name {
+    display: block;
+    width: 400px;
+    margin: 10px;
+    padding:10px;
+    background-color: coral;
+    text-decoration: none;
+    font-size: 40px;
+    color: black;
+    letter-spacing: 5px
+    }
+
+.quiz-link{
+    text-decoration: none;
+}
+
+
+.quiz-list {
+    margin-left: auto;
+    margin-right: auto;
+    background-color: blanchedalmond;
+    padding:30px
+    }
+
+.quiz {
+    margin-left: auto;
+    margin-right: auto;
+    background-color: blanchedalmond;
+    padding:30px
+}
+
+.quiz-question-item-qestion {
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.quiz-question-item-answer {
+    font-size: 20px;
+    list-style: none;
+    margin: 30px;
+
+}
+
 
 .quiz-indicator {
     margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+    }
+
+.quiz-results {
+    font-size: 15px;
+    margin: 20px
+
 }
+ .quiz-result-item-qestion {
+     font-weight: bold;
+ }
+
+ .quiz-complete-form-wrapper {
+    margin: 30px;
+    }
+
+.quiz-complete-form{
+    height: 150px;
+    margin: 20px;
+    }
+
+.quiz-questions{}
+
+
 
 #btn-next {
     visibility: hidden;
-}
+    }
 
 #btn-restart {
     visibility: hidden;
-}
+    }
 
 .quiz-list-hidden,
 .form--hidden,
 .quiz--hidden,
 .questions--hidden {
     display: none;
-}
+    }
 
 .answer-invalid {
     color: red;
-}
+    }
 
 .answer-valid {
     color: green;
+    }
+
+.input-unvisible {
+    display: none;
+    }
+
+.form-input {
+    display: block;
+    border: 3px solid darkgreen;
+    border-radius: 10px;
+    padding: 4px
+    }
+
+.wrong-input {
+    background-color: bisque;
+    }
+
+.good-input {
+    background-color: lightgreen;
+    }
+
+.quiz-controls {
+
+    margin: 40px;
+
 }
+
